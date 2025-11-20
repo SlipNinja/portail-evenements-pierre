@@ -12,7 +12,9 @@ function clean_data(data) {
 
 	// Handles undefined addresses
 	const get_adress = (e) => {
-		return e["venue"]["adress"] == undefined ? "At home" : `${e["venue"]["adress"]} ${e["venue"]["city"]}`;
+		return e["venue"]["address"] == undefined
+			? "At home"
+			: `${e["venue"]["address"]}, ${e["venue"]["city"]}`.replace("Aveune", "Avenue");
 	};
 
 	// Handles useless <p> tags around description
@@ -20,12 +22,24 @@ function clean_data(data) {
 		return e["description"].slice(3, -4);
 	};
 
+	// Extract date and change format
+	const get_date = (e) => {
+		let [year, month, day] = e["start_date"].split(" ")[0].split("-");
+		return [day, month, year].join("-");
+	};
+
+	// Extract hour
+	const get_hour = (e) => {
+		return e["start_date"].split(" ")[1];
+	};
+
 	for (const event of data) {
 		const new_event = {
 			id: event["id"],
 			name: event["title"],
 			desc: get_desc(event),
-			date: event["start_date"],
+			date: get_date(event),
+			hour: get_hour(event),
 			adress: get_adress(event),
 			url: event["url"],
 		};
