@@ -86,7 +86,6 @@ function create_event_element(event, in_planning) {
 	if (in_planning) {
 		action_button.textContent = "Remove";
 		action_button.addEventListener("click", (e) => {
-			const planning_list = document.getElementById("planning_list");
 			remove_from_planning(event);
 			save_planning();
 			populate_events("event_list", current_events);
@@ -117,6 +116,14 @@ function populate_events(container_id, array) {
 	}
 }
 
+function toggle_theme() {
+	if (document.body.classList.contains("light")) {
+		document.body.classList = "dark";
+	} else {
+		document.body.classList = "light";
+	}
+}
+
 function save_planning() {
 	globalThis.localStorage.setItem("planning", JSON.stringify(current_planning));
 }
@@ -128,6 +135,9 @@ function get_planning() {
 function init_app() {
 	current_planning = get_planning();
 	if (current_planning == undefined) current_planning = [];
+
+	const toggle = document.querySelector("button:has(> img)");
+	toggle.addEventListener("click", toggle_theme);
 
 	get_events().then((events) => {
 		current_events = events;
