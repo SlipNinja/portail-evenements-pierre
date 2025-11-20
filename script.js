@@ -53,14 +53,17 @@ function clean_data(data) {
 	return cleaned;
 }
 
+// Check if an event is on planning
 function event_in_planning(event) {
 	return current_planning.some((e) => e["id"] == event["id"]);
 }
 
+// Remove an event from planning
 function remove_from_planning(event) {
 	current_planning = current_planning.filter((e) => e["id"] != event["id"]);
 }
 
+// Create a new event element, handles when it's already in the planning
 function create_event_element(event, in_planning) {
 	const new_event = document.createElement("div");
 	new_event.classList.add("event");
@@ -106,6 +109,7 @@ function create_event_element(event, in_planning) {
 	return new_event;
 }
 
+// Populate a container with events in array
 function populate_events(container_id, array) {
 	const container = document.getElementById(container_id);
 	container.innerHTML = "";
@@ -116,25 +120,63 @@ function populate_events(container_id, array) {
 	}
 }
 
+// Toggle between dark and light mode
 function toggle_theme() {
 	if (document.body.classList.contains("light")) {
 		document.body.classList = "dark";
+		create_cookie("theme", "dark", 365);
 	} else {
 		document.body.classList = "light";
+		create_cookie("theme", "light", 365);
 	}
 }
 
+// Save planning data to local storage
 function save_planning() {
 	globalThis.localStorage.setItem("planning", JSON.stringify(current_planning));
 }
 
+// Get planning data from local storage
 function get_planning() {
 	return JSON.parse(globalThis.localStorage.getItem("planning"));
 }
 
+// Delete cookie by name
+function delete_cookie(name) {
+	const new_cookie = `${name}=0; max-age=0`;
+	document.cookie = new_cookie;
+}
+
+// Create cookie with value and lifespan in days
+function create_cookie(name, value, days) {
+	const new_cookie = `${name}=${value}; max-age=${days * 24 * 60 * 60}`;
+	document.cookie = new_cookie;
+}
+
+// Get all cookies
+function get_cookies() {
+	const cookies = [];
+
+	if (document.cookie == "") return cookies;
+
+	for (const cookie of document.cookie.split(";")) {
+		const splitted = cookie.trim().split("=");
+		cookies.push({ name: splitted[0], value: splitted[1] });
+	}
+
+	return cookies;
+}
+
+// Initialize application
 function init_app() {
 	current_planning = get_planning();
 	if (current_planning == undefined) current_planning = [];
+
+	const cookies = get_cookies();
+	if (cookies.length > 0) {
+		const theme = cookies.find((c) => c["name"] == "theme")["value"];
+		document.body.classList = theme;
+	}
 
 	const toggle = document.querySelector("button:has(> img)");
 	toggle.addEventListener("click", toggle_theme);
