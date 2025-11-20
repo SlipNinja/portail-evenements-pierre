@@ -1,3 +1,6 @@
+let current_events = [];
+let current_planning = [];
+
 // Fetch API and returns useable data
 async function get_events() {
 	const response = await fetch("https://demo.theeventscalendar.com/wp-json/tribe/events/v1/events");
@@ -50,8 +53,62 @@ function clean_data(data) {
 	return cleaned;
 }
 
-get_events().then((r) => {
-	for (const event of r) {
-		console.log(event);
+function get_event(event_id) {
+	return current_events.find((e) => e["id"] == event_id);
+}
+
+function event_in_planning(event) {
+	return current_planning.some((e) => e["id"] == event["id"]);
+}
+
+function create_event_element(event, in_planning) {
+	const new_event = document.createElement("div");
+	new_event.classList.add("event");
+
+	const name = document.createElement("h3");
+	name.textContent = event["name"];
+
+	const date = document.createElement("div");
+	date.textContent = `${event["date"]} at ${event["hour"]}`;
+
+	const adress = document.createElement("div");
+	adress.textContent = event["adress"];
+
+	const buttons = document.createElement("div");
+
+	const detail_button = document.createElement("button");
+	detail_button.textContent = "View details";
+	detail_button.classList.add("detail_btn");
+
+	const action_button = document.createElement("button");
+	action_button.classList.add("action_btn");
+	if (in_planning) {
+		action_button.textContent = "Remove";
+	} else {
+		action_button.textContent = "Add";
 	}
-});
+
+	buttons.append(detail_button, action_button);
+	new_event.append(name, date, adress, buttons);
+	return new_event;
+}
+
+function populate_events() {
+	const event_list = document.getElementById("event_list");
+	event_list.innerHTML = "";
+
+	for (const event of current_events) {
+		const new_event = create_event_element(event);
+		event_list.appendChild(new_event, event_in_planning(event));
+	}
+}
+
+function init_app() {
+	get_events().then((events) => {
+		current_events = events;
+
+		populate_events();
+	});
+}
+
+init_app();

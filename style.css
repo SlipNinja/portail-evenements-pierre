@@ -13,9 +13,14 @@ body {
 }
 body.light {
   background-color: #f7fff7;
+  color: #292f36;
+}
+body.light .event {
+  background-color: #ffe66d;
 }
 body.dark {
   background-color: #292f36;
+  color: #f7fff7;
 }
 
 header {
@@ -25,7 +30,6 @@ header {
   width: 100%;
   height: 5rem;
   padding: 10px 40px;
-  background-color: green;
 }
 header > button {
   background-color: inherit;
@@ -48,6 +52,7 @@ main {
   display: flex;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 main > section {
   display: flex;
@@ -56,13 +61,52 @@ main > section {
 }
 main > section#event_container {
   flex: 2;
-  background-color: blue;
 }
 main > section#planning_container {
   flex: 1;
-  background-color: red;
+  background-color: #f5a623;
+  color: #292f36;
 }
 main > section > div {
   display: flex;
+  gap: 20px;
   flex-wrap: wrap;
+  justify-content: center;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 10px;
+  overflow: scroll;
+}
+main > section > div > .event {
+  display: flex;
+  justify-content: space-between;
+  width: 25%;
+  padding: 5px;
+  gap: 10px;
+  flex-direction: column;
+  border: 1px solid #4ecdc4;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px #4ecdc4;
+}
+main > section > div > .event > div:has(> button) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+main > section > div > .event > div:has(> button) > button {
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+main > section > div > .event > div:has(> button) > button.detail_btn {
+  background-color: #4ecdc4;
+}
+main > section > div > .event > div:has(> button) > button.detail_btn:hover {
+  background-color: #f7fff7;
+}
+main > section > div > .event > div:has(> button) > button.action_btn {
+  background-color: #f5a623;
+}
+main > section > div > .event > div:has(> button) > button.action_btn:hover {
+  background-color: #ffe66d;
 }/*# sourceMappingURL=style.css.map */
