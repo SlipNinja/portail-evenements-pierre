@@ -53,10 +53,12 @@ main {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  padding: 20px;
 }
 main > section {
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: 100%;
 }
 main > section#event_container {
@@ -66,6 +68,10 @@ main > section#planning_container {
   flex: 1;
   background-color: #f5a623;
   color: #292f36;
+  border-radius: 5px;
+}
+main > section#planning_container .event {
+  background-color: #ffe66d;
 }
 main > section > div {
   display: flex;
@@ -74,19 +80,24 @@ main > section > div {
   justify-content: center;
   height: -moz-fit-content;
   height: fit-content;
-  padding: 10px;
+  padding: 20px;
   overflow: scroll;
 }
 main > section > div > .event {
   display: flex;
   justify-content: space-between;
   width: 25%;
-  padding: 5px;
+  min-width: 200px;
+  padding: 10px;
   gap: 10px;
   flex-direction: column;
   border: 1px solid #4ecdc4;
   border-radius: 5px;
   box-shadow: 0px 0px 5px #4ecdc4;
+}
+main > section > div > .event.in_planning {
+  border: 1px solid #f7fff7;
+  box-shadow: 0px 0px 5px #292f36;
 }
 main > section > div > .event > div:has(> button) {
   display: flex;

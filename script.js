@@ -1,5 +1,5 @@
 let current_events = [];
-let current_planning = [];
+let current_planning;
 
 // Fetch API and returns useable data
 async function get_events() {
@@ -53,17 +53,18 @@ function clean_data(data) {
 	return cleaned;
 }
 
-function get_event(event_id) {
-	return current_events.find((e) => e["id"] == event_id);
-}
-
 function event_in_planning(event) {
 	return current_planning.some((e) => e["id"] == event["id"]);
+}
+
+function remove_from_planning(event) {
+	current_planning = current_planning.filter((e) => e["id"] != event["id"]);
 }
 
 function create_event_element(event, in_planning) {
 	const new_event = document.createElement("div");
 	new_event.classList.add("event");
+	if (in_planning) new_event.classList.add("in_planning");
 
 	const name = document.createElement("h3");
 	name.textContent = event["name"];
@@ -84,8 +85,21 @@ function create_event_element(event, in_planning) {
 	action_button.classList.add("action_btn");
 	if (in_planning) {
 		action_button.textContent = "Remove";
+		action_button.addEventListener("click", (e) => {
+			const planning_list = document.getElementById("planning_list");
+			remove_from_planning(event);
+			save_planning();
+			populate_events("event_list", current_events);
+			populate_events("planning_list", current_planning);
+		});
 	} else {
 		action_button.textContent = "Add";
+		action_button.addEventListener("click", (e) => {
+			current_planning.push(event);
+			save_planning();
+			populate_events("event_list", current_events);
+			populate_events("planning_list", current_planning);
+		});
 	}
 
 	buttons.append(detail_button, action_button);
@@ -93,21 +107,33 @@ function create_event_element(event, in_planning) {
 	return new_event;
 }
 
-function populate_events() {
-	const event_list = document.getElementById("event_list");
-	event_list.innerHTML = "";
+function populate_events(container_id, array) {
+	const container = document.getElementById(container_id);
+	container.innerHTML = "";
 
-	for (const event of current_events) {
-		const new_event = create_event_element(event);
-		event_list.appendChild(new_event, event_in_planning(event));
+	for (const event of array) {
+		const new_event = create_event_element(event, event_in_planning(event));
+		container.appendChild(new_event);
 	}
 }
 
+function save_planning() {
+	globalThis.localStorage.setItem("planning", JSON.stringify(current_planning));
+}
+
+function get_planning() {
+	return JSON.parse(globalThis.localStorage.getItem("planning"));
+}
+
 function init_app() {
+	current_planning = get_planning();
+	if (current_planning == undefined) current_planning = [];
+
 	get_events().then((events) => {
 		current_events = events;
 
-		populate_events();
+		populate_events("event_list", current_events);
+		populate_events("planning_list", current_planning);
 	});
 }
 
