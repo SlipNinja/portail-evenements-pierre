@@ -34,6 +34,7 @@ body {
 	&.light {
 		background-color: $light_color;
 		color: $dark_color;
+		scrollbar-color: $secondary_color $light_color;
 
 		& > dialog {
 			background-color: $tertiary_color;
@@ -56,6 +57,7 @@ body {
 	&.dark {
 		background-color: $dark_color;
 		color: $light_color;
+		scrollbar-color: $primary_color $dark_color;
 
 		& :not(#planning_list) > .event {
 			border-color: $primary_color;
@@ -164,6 +166,10 @@ main {
 			background-color: $secondary_color;
 			color: $dark_color;
 			border-radius: 5px;
+
+			& > div {
+				scrollbar-color: $dark_color $secondary_color;
+			}
 
 			& .event {
 				background-color: $tertiary_color;

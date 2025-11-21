@@ -23,6 +23,7 @@ body h3 {
 body.light {
   background-color: #f7fff7;
   color: #292f36;
+  scrollbar-color: #f5a623 #f7fff7;
 }
 body.light > dialog {
   background-color: #ffe66d;
@@ -41,6 +42,7 @@ body.light :not(#planning_list) > .event.in_planning {
 body.dark {
   background-color: #292f36;
   color: #f7fff7;
+  scrollbar-color: #4ecdc4 #292f36;
 }
 body.dark :not(#planning_list) > .event {
   border-color: #4ecdc4;
@@ -138,6 +140,9 @@ main > section#planning_container {
   background-color: #f5a623;
   color: #292f36;
   border-radius: 5px;
+}
+main > section#planning_container > div {
+  scrollbar-color: #292f36 #f5a623;
 }
 main > section#planning_container .event {
   background-color: #ffe66d;
