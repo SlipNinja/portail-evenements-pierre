@@ -18,18 +18,39 @@ body h2 {
   font-size: 2rem;
 }
 body h3 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 body.light {
   background-color: #f7fff7;
   color: #292f36;
 }
-body.light > dialog, body.light .event {
+body.light > dialog {
   background-color: #ffe66d;
+}
+body.light :not(#planning_list) > .event {
+  background-color: #ffe66d;
+  border-color: #f5a623;
+  border-style: solid;
+  border-width: 1px;
+}
+body.light :not(#planning_list) > .event.in_planning {
+  border-width: 5px;
+  border-style: double;
+  box-shadow: 0px 0px 5px #292f36;
 }
 body.dark {
   background-color: #292f36;
   color: #f7fff7;
+}
+body.dark :not(#planning_list) > .event {
+  border-color: #4ecdc4;
+  border-style: solid;
+  border-width: 1px;
+}
+body.dark :not(#planning_list) > .event.in_planning {
+  border-width: 5px;
+  border-style: double;
+  box-shadow: 0px 0px 5px #4ecdc4;
 }
 body > dialog {
   width: 40%;
@@ -120,6 +141,7 @@ main > section#planning_container {
 }
 main > section#planning_container .event {
   background-color: #ffe66d;
+  box-shadow: 0px 0px 5px #292f36;
 }
 main > section > div {
   display: flex;
@@ -136,16 +158,10 @@ main > section > div > .event {
   justify-content: space-between;
   width: 25%;
   min-width: 200px;
-  padding: 10px;
+  padding: 20px;
   gap: 10px;
   flex-direction: column;
-  border: 1px solid #4ecdc4;
   border-radius: 5px;
-  box-shadow: 0px 0px 5px #4ecdc4;
-}
-main > section > div > .event.in_planning {
-  border: 1px solid #f7fff7;
-  box-shadow: 0px 0px 5px #292f36;
 }
 main > section > div > .event > div:has(> button) {
   display: flex;

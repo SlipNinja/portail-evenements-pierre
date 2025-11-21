@@ -28,22 +28,46 @@ body {
 	}
 
 	& h3 {
-		font-size: 1.5rem;
+		font-size: 1.3rem;
 	}
 
 	&.light {
 		background-color: $light_color;
 		color: $dark_color;
 
-		& > dialog,
-		& .event {
+		& > dialog {
 			background-color: $tertiary_color;
+		}
+
+		& :not(#planning_list) > .event {
+			background-color: $tertiary_color;
+			border-color: $secondary_color;
+			border-style: solid;
+			border-width: 1px;
+
+			&.in_planning {
+				border-width: 5px;
+				border-style: double;
+				box-shadow: 0px 0px 5px $dark_color;
+			}
 		}
 	}
 
 	&.dark {
 		background-color: $dark_color;
 		color: $light_color;
+
+		& :not(#planning_list) > .event {
+			border-color: $primary_color;
+			border-style: solid;
+			border-width: 1px;
+
+			&.in_planning {
+				border-width: 5px;
+				border-style: double;
+				box-shadow: 0px 0px 5px $primary_color;
+			}
+		}
 	}
 
 	& > dialog {
@@ -143,6 +167,7 @@ main {
 
 			& .event {
 				background-color: $tertiary_color;
+				box-shadow: 0px 0px 5px $dark_color;
 			}
 		}
 
@@ -160,17 +185,10 @@ main {
 				justify-content: space-between;
 				width: 25%;
 				min-width: 200px;
-				padding: $base_gap;
+				padding: $base_gap * 2;
 				gap: $base_gap;
 				flex-direction: column;
-				border: 1px solid $primary_color;
 				border-radius: 5px;
-				box-shadow: 0px 0px 5px $primary_color;
-
-				&.in_planning {
-					border: 1px solid $light_color;
-					box-shadow: 0px 0px 5px $dark_color;
-				}
 
 				& > div:has(> button) {
 					display: flex;
