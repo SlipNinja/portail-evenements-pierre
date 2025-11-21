@@ -2,6 +2,7 @@
 
 let current_events = [];
 let current_planning;
+let my_modal;
 
 /* -------------------- API HANDLING -------------------- */
 
@@ -18,7 +19,7 @@ function clean_data(data) {
 	const cleaned = [];
 
 	// Handles undefined addresses
-	const get_adress = (e) => {
+	const get_address = (e) => {
 		return e["venue"]["address"] == undefined
 			? "At home"
 			: `${e["venue"]["address"]}, ${e["venue"]["city"]}`.replace("Aveune", "Avenue");
@@ -47,7 +48,7 @@ function clean_data(data) {
 			desc: get_desc(event),
 			date: get_date(event),
 			hour: get_hour(event),
-			adress: get_adress(event),
+			address: get_address(event),
 			url: event["url"],
 		};
 
@@ -84,14 +85,18 @@ function create_event_element(event) {
 	const date = document.createElement("div");
 	date.textContent = `${event["date"]} at ${event["hour"]}`;
 
-	const adress = document.createElement("div");
-	adress.textContent = event["adress"];
+	const address = document.createElement("div");
+	address.textContent = event["address"];
 
 	const buttons = document.createElement("div");
 
 	const detail_button = document.createElement("button");
 	detail_button.textContent = "View details";
 	detail_button.classList.add("detail_btn");
+	detail_button.addEventListener("click", (e) => {
+		fill_modal(event);
+		my_modal.showModal();
+	});
 
 	const action_button = document.createElement("button");
 	action_button.classList.add("action_btn");
@@ -112,8 +117,35 @@ function create_event_element(event) {
 	}
 
 	buttons.append(detail_button, action_button);
-	new_event.append(name, date, adress, buttons);
+	new_event.append(name, date, address, buttons);
 	return new_event;
+}
+
+function create_modal() {
+	const modal = document.createElement("dialog");
+
+	const modal_content = document.createElement("div");
+	modal_content.id = "modal_content";
+
+	const modal_name = document.createElement("h3");
+	modal_name.id = "modal_name";
+
+	const modal_desc = document.createElement("div");
+	modal_desc.id = "modal_desc";
+
+	const modal_date = document.createElement("div");
+	modal_date.id = "modal_date";
+
+	const modal_address = document.createElement("div");
+	modal_address.id = "modal_address";
+
+	const modal_url = document.createElement("a");
+	modal_url.id = "modal_url";
+
+	modal_content.append(modal_name, modal_desc, modal_date, modal_address, modal_url);
+	modal.appendChild(modal_content);
+	document.body.appendChild(modal);
+	return modal;
 }
 
 /* -------------------- DISPLAY -------------------- */
@@ -133,6 +165,24 @@ function populate_events(container_id, array) {
 		const new_event = create_event_element(event);
 		container.appendChild(new_event);
 	}
+}
+
+function fill_modal(event) {
+	const modal_name = document.getElementById("modal_name");
+	modal_name.textContent = event["name"];
+
+	const modal_desc = document.getElementById("modal_desc");
+	modal_desc.textContent = event["desc"];
+
+	const modal_date = document.getElementById("modal_date");
+	modal_date.textContent = `${event["date"]} at ${event["hour"]}`;
+
+	const modal_address = document.getElementById("modal_address");
+	modal_address.textContent = event["address"];
+
+	const modal_url = document.getElementById("modal_url");
+	modal_url.textContent = event["url"];
+	modal_url.href = event["url"];
 }
 
 // Toggle between dark and light mode
@@ -201,6 +251,16 @@ function init_app() {
 	// Add listener to the toggle theme button
 	const toggle = document.querySelector("button:has(> img)");
 	toggle.addEventListener("click", toggle_theme);
+
+	// Instanciate modal
+	my_modal = create_modal();
+	my_modal.addEventListener("click", (e) => {
+		// If ::backdrop clicked
+		const click_outside = my_modal === e.target;
+
+		// Close modal
+		if (click_outside) my_modal.close();
+	});
 
 	// Fetch API then display results
 	get_events().then((events) => {
