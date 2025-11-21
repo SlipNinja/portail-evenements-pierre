@@ -257,15 +257,8 @@ function get_cookies() {
 	return cookies;
 }
 
-/* -------------------- MAIN EXECUTION -------------------- */
-
-// Initialize application
-function init_app() {
-	// Recover planning from local storage
-	current_planning = get_planning();
-	if (current_planning == undefined) current_planning = [];
-
-	// Recover theme from cookies
+// Recover theme stored in cookies if it exists, else apply default
+function recover_theme() {
 	const cookies = get_cookies();
 	const theme_cookie = cookies.find((c) => c["name"] == "theme");
 	if (theme_cookie) {
@@ -275,6 +268,17 @@ function init_app() {
 		document.body.classList = "dark";
 		document.getElementsByTagName("img")[0].src = `./imgs/dark.png`;
 	}
+}
+/* -------------------- MAIN EXECUTION -------------------- */
+
+// Initialize application
+function init_app() {
+	// Recover planning from local storage
+	current_planning = get_planning();
+	if (current_planning == undefined) current_planning = [];
+
+	// Recover theme from cookies
+	recover_theme();
 
 	// Add listener to the toggle theme button
 	const toggle = document.querySelector("button:has(> img)");
