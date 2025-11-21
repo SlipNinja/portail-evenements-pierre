@@ -1,7 +1,7 @@
 /* -------------------- GLOBAL VARIABLES -------------------- */
 
 let current_events = [];
-let current_planning;
+let current_planning = [];
 let my_modal;
 
 /* -------------------- API HANDLING -------------------- */
@@ -16,8 +16,6 @@ async function get_events() {
 
 // Clean and returns received data
 function clean_data(data) {
-	const cleaned = [];
-
 	// Handles undefined addresses
 	const get_address = (e) => {
 		return e["venue"]["address"] == undefined
@@ -41,6 +39,8 @@ function clean_data(data) {
 		return e["start_date"].split(" ")[1];
 	};
 
+	// Creates list of cleaned events
+	const cleaned = [];
 	for (const event of data) {
 		const new_event = {
 			id: event["id"],
@@ -90,6 +90,7 @@ function create_event_element(event) {
 
 	const buttons = document.createElement("div");
 
+	// Button that show modal
 	const detail_button = document.createElement("button");
 	detail_button.textContent = "View details";
 	detail_button.classList.add("detail_btn");
@@ -98,6 +99,7 @@ function create_event_element(event) {
 		my_modal.showModal();
 	});
 
+	// Button that adds/removes an event to/from planning
 	const action_button = document.createElement("button");
 	action_button.classList.add("action_btn");
 	if (in_planning) {
@@ -176,6 +178,7 @@ function populate_events(container_id, array) {
 	}
 }
 
+// Fills the modal with event data
 function fill_modal(event) {
 	const modal_name = document.getElementById("modal_name");
 	modal_name.textContent = event["name"];
