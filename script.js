@@ -8,8 +8,15 @@ let my_modal;
 
 // Fetch API and returns useable data
 async function get_events() {
-	const response = await fetch("https://demo.theeventscalendar.com/wp-json/tribe/events/v1/events");
+	const api_url = "https://demo.theeventscalendar.com/wp-json/tribe/events/v1/events";
+	const response = await fetch(api_url);
 	const data = await response.json();
+
+	// Handling fetch fail
+	if (data["events"] == undefined) {
+		console.error(`Error - Cannot fetch data at ${api_url}`);
+		return [];
+	}
 
 	return clean_data(data["events"]);
 }
@@ -41,6 +48,7 @@ function clean_data(data) {
 
 	// Creates list of cleaned events
 	const cleaned = [];
+	console.log(data);
 	for (const event of data) {
 		const new_event = {
 			id: event["id"],
