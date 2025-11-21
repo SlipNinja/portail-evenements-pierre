@@ -33,7 +33,7 @@ function clean_data(data) {
 	// Extract date and change format
 	const get_date = (e) => {
 		let [year, month, day] = e["start_date"].split(" ")[0].split("-");
-		return [day, month, year].join("-");
+		return [day, month, year].join("/");
 	};
 
 	// Extract hour
@@ -123,6 +123,11 @@ function create_event_element(event) {
 
 function create_modal() {
 	const modal = document.createElement("dialog");
+	modal.addEventListener("click", (e) => {
+		// If ::backdrop clicked close modal
+		const click_outside = my_modal === e.target;
+		if (click_outside) my_modal.close();
+	});
 
 	const modal_content = document.createElement("div");
 	modal_content.id = "modal_content";
@@ -142,7 +147,11 @@ function create_modal() {
 	const modal_url = document.createElement("a");
 	modal_url.id = "modal_url";
 
-	modal_content.append(modal_name, modal_desc, modal_date, modal_address, modal_url);
+	const modal_close = document.createElement("button");
+	modal_close.textContent = "X";
+	modal_close.addEventListener("click", (e) => modal.close());
+
+	modal_content.append(modal_name, modal_desc, modal_date, modal_address, modal_url, modal_close);
 	modal.appendChild(modal_content);
 	document.body.appendChild(modal);
 	return modal;
@@ -175,13 +184,13 @@ function fill_modal(event) {
 	modal_desc.textContent = event["desc"];
 
 	const modal_date = document.getElementById("modal_date");
-	modal_date.textContent = `${event["date"]} at ${event["hour"]}`;
+	modal_date.textContent = `When : ${event["date"]} at ${event["hour"]}`;
 
 	const modal_address = document.getElementById("modal_address");
-	modal_address.textContent = event["address"];
+	modal_address.textContent = `Where : ${event["address"]}`;
 
 	const modal_url = document.getElementById("modal_url");
-	modal_url.textContent = event["url"];
+	modal_url.textContent = "Link to website";
 	modal_url.href = event["url"];
 }
 
@@ -254,13 +263,6 @@ function init_app() {
 
 	// Instanciate modal
 	my_modal = create_modal();
-	my_modal.addEventListener("click", (e) => {
-		// If ::backdrop clicked
-		const click_outside = my_modal === e.target;
-
-		// Close modal
-		if (click_outside) my_modal.close();
-	});
 
 	// Fetch API then display results
 	get_events().then((events) => {
