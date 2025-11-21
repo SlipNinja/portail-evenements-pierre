@@ -20,10 +20,16 @@ body h2 {
 body h3 {
   font-size: 1.3rem;
 }
+body button {
+  cursor: pointer;
+}
 body.light {
   background-color: #f7fff7;
   color: #292f36;
   scrollbar-color: #f5a623 #f7fff7;
+}
+body.light img:hover {
+  filter: drop-shadow(0px 0px 10px #292f36);
 }
 body.light > dialog {
   background-color: #ffe66d;
@@ -43,6 +49,9 @@ body.dark {
   background-color: #292f36;
   color: #f7fff7;
   scrollbar-color: #4ecdc4 #292f36;
+}
+body.dark img:hover {
+  filter: drop-shadow(0px 0px 10px #f7fff7);
 }
 body.dark :not(#planning_list) > .event {
   border-color: #4ecdc4;
@@ -106,7 +115,6 @@ header {
 header > button {
   background-color: inherit;
   border: none;
-  cursor: pointer;
   height: 80%;
   aspect-ratio: 1;
 }
@@ -115,9 +123,6 @@ header > button > img {
   height: 100%;
   -o-object-fit: contain;
      object-fit: contain;
-}
-header > button > img:hover {
-  filter: drop-shadow(0px 0px 10px #f7fff7);
 }
 
 main {
@@ -188,7 +193,6 @@ main > section > div > .event > div:has(> button) {
 main > section > div > .event > div:has(> button) > button {
   padding: 5px 10px;
   border-radius: 3px;
-  cursor: pointer;
 }
 main > section > div > .event > div:has(> button) > button.detail_btn {
   background-color: #4ecdc4;

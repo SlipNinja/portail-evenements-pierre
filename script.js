@@ -201,10 +201,12 @@ function fill_modal(event) {
 function toggle_theme() {
 	if (document.body.classList.contains("light")) {
 		document.body.classList = "dark";
+		document.getElementsByTagName("img")[0].src = "./imgs/dark.png";
 		create_cookie("theme", "dark", 365);
 	} else {
 		document.body.classList = "light";
 		create_cookie("theme", "light", 365);
+		document.getElementsByTagName("img")[0].src = "./imgs/light.png";
 	}
 }
 
@@ -258,7 +260,13 @@ function init_app() {
 	// Recover theme from cookies
 	const cookies = get_cookies();
 	const theme_cookie = cookies.find((c) => c["name"] == "theme");
-	if (theme_cookie) document.body.classList = theme_cookie["value"];
+	if (theme_cookie) {
+		document.body.classList = theme_cookie["value"];
+		document.getElementsByTagName("img")[0].src = `./imgs/${theme_cookie["value"]}.png`;
+	} else {
+		document.body.classList = "dark";
+		document.getElementsByTagName("img")[0].src = `./imgs/dark.png`;
+	}
 
 	// Add listener to the toggle theme button
 	const toggle = document.querySelector("button:has(> img)");
