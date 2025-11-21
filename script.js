@@ -1,5 +1,9 @@
+/* -------------------- GLOBAL VARIABLES -------------------- */
+
 let current_events = [];
 let current_planning;
+
+/* -------------------- API HANDLING -------------------- */
 
 // Fetch API and returns useable data
 async function get_events() {
@@ -9,7 +13,7 @@ async function get_events() {
 	return clean_data(data["events"]);
 }
 
-// Clean received data
+// Clean and returns received data
 function clean_data(data) {
 	const cleaned = [];
 
@@ -53,6 +57,8 @@ function clean_data(data) {
 	return cleaned;
 }
 
+/* -------------------- PLANNING HANDLING -------------------- */
+
 // Check if an event is on planning
 function event_in_planning(event) {
 	return current_planning.some((e) => e["id"] == event["id"]);
@@ -63,8 +69,11 @@ function remove_from_planning(event) {
 	current_planning = current_planning.filter((e) => e["id"] != event["id"]);
 }
 
+/* -------------------- HTML CREATION -------------------- */
+
 // Create a new event element, handles when it's already in the planning
-function create_event_element(event, in_planning) {
+function create_event_element(event) {
+	const in_planning = event_in_planning(event);
 	const new_event = document.createElement("div");
 	new_event.classList.add("event");
 	if (in_planning) new_event.classList.add("in_planning");
@@ -91,16 +100,14 @@ function create_event_element(event, in_planning) {
 		action_button.addEventListener("click", (e) => {
 			remove_from_planning(event);
 			save_planning();
-			populate_events("event_list", current_events);
-			populate_events("planning_list", current_planning);
+			populate_interface();
 		});
 	} else {
 		action_button.textContent = "Add";
 		action_button.addEventListener("click", (e) => {
 			current_planning.push(event);
 			save_planning();
-			populate_events("event_list", current_events);
-			populate_events("planning_list", current_planning);
+			populate_interface();
 		});
 	}
 
@@ -109,13 +116,21 @@ function create_event_element(event, in_planning) {
 	return new_event;
 }
 
+/* -------------------- DISPLAY -------------------- */
+
+//Populate event list and planning
+function populate_interface() {
+	populate_events("event_list", current_events);
+	populate_events("planning_list", current_planning);
+}
+
 // Populate a container with events in array
 function populate_events(container_id, array) {
 	const container = document.getElementById(container_id);
 	container.innerHTML = "";
 
 	for (const event of array) {
-		const new_event = create_event_element(event, event_in_planning(event));
+		const new_event = create_event_element(event);
 		container.appendChild(new_event);
 	}
 }
@@ -131,6 +146,8 @@ function toggle_theme() {
 	}
 }
 
+/* -------------------- LOCALSTORAGE -------------------- */
+
 // Save planning data to local storage
 function save_planning() {
 	globalThis.localStorage.setItem("planning", JSON.stringify(current_planning));
@@ -140,6 +157,8 @@ function save_planning() {
 function get_planning() {
 	return JSON.parse(globalThis.localStorage.getItem("planning"));
 }
+
+/* -------------------- COOKIES -------------------- */
 
 // Delete cookie by name
 function delete_cookie(name) {
@@ -153,10 +172,9 @@ function create_cookie(name, value, days) {
 	document.cookie = new_cookie;
 }
 
-// Get all cookies
+// Get all cookies as objects in an array
 function get_cookies() {
 	const cookies = [];
-
 	if (document.cookie == "") return cookies;
 
 	for (const cookie of document.cookie.split(";")) {
@@ -167,25 +185,27 @@ function get_cookies() {
 	return cookies;
 }
 
+/* -------------------- MAIN EXECUTION -------------------- */
+
 // Initialize application
 function init_app() {
+	// Recover planning from local storage
 	current_planning = get_planning();
 	if (current_planning == undefined) current_planning = [];
 
+	// Recover theme from cookies
 	const cookies = get_cookies();
-	if (cookies.length > 0) {
-		const theme = cookies.find((c) => c["name"] == "theme")["value"];
-		document.body.classList = theme;
-	}
+	const theme_cookie = cookies.find((c) => c["name"] == "theme");
+	if (theme_cookie) document.body.classList = theme_cookie["value"];
 
+	// Add listener to the toggle theme button
 	const toggle = document.querySelector("button:has(> img)");
 	toggle.addEventListener("click", toggle_theme);
 
+	// Fetch API then display results
 	get_events().then((events) => {
 		current_events = events;
-
-		populate_events("event_list", current_events);
-		populate_events("planning_list", current_planning);
+		populate_interface();
 	});
 }
 
